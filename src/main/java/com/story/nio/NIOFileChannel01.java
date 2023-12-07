@@ -1,4 +1,4 @@
-package nio;
+package com.story.nio;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
