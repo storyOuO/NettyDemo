@@ -10,6 +10,11 @@ import io.netty.handler.codec.string.StringEncoder;
 
 import java.util.Scanner;
 
+/**
+ * Netty群聊 客户端class
+ * @author story7
+ * @date 2023/12/09
+ */
 public class GroupChatClient {
 
     private final String host;

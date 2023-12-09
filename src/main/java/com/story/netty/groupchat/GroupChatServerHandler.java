@@ -1,6 +1,5 @@
 package com.story.netty.groupchat;
 
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -11,15 +10,30 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Netty群聊 服务器处理器class
+ * @author story7
+ * @date 2023/12/09
+ */
 public class GroupChatServerHandler extends SimpleChannelInboundHandler<String> {
 
-    // 构造一个单例的channelgroup 用于管理服务器中所有频道
+    /**
+     * 构造一个单例的channelgroup
+     * 用于管理服务器中所有频道
+     */
     private static ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-    // 日期格式
+
+    /**
+     * 日期格式
+     */
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    // 监听add事件 即建立连接
-    // 发送给客户端的消息
+    /**
+     * 监听add事件 即建立连接
+     * 发送给客户端的消息
+     * @param ctx
+     * @throws Exception
+     */
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         // 利用Netty封装好的 channelGroup类 直接发送消息给其他频道
@@ -27,29 +41,47 @@ public class GroupChatServerHandler extends SimpleChannelInboundHandler<String> 
         channelGroup.add(ctx.channel());
     }
 
-    // removed时间 即断开连接
-    // 发送给客户端的消息
+    /**
+     * removed时间 即断开连接
+     * 发送给客户端的消息
+     * @param ctx
+     * @throws Exception
+     */
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         channelGroup.writeAndFlush("[客户端]:" + ctx.channel().remoteAddress() + " 离开聊天...\n");
         // channelGroup会自动删除 无需手动删除频道
     }
 
-    // active 即连接状态
-    // 服务端的监听
+    /**
+     * active 即连接状态
+     * 服务端的监听
+     * @param ctx
+     * @throws Exception
+     */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println(ctx.channel().remoteAddress() + " 上线了.....\n");
     }
 
-    // active 即断开连接状态
-    // 服务端的监听
+    /**
+     * active 即断开连接状态
+     * 服务端的监听
+     * @param ctx
+     * @throws Exception
+     */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         System.out.println(ctx.channel().remoteAddress() + " 下线了.....\n");
     }
 
-    // 进行消息转发
+    /**
+     * 进行消息转发
+     * @param ctx           the {@link ChannelHandlerContext} which this {@link SimpleChannelInboundHandler}
+     *                      belongs to
+     * @param msg           the message to handle
+     * @throws Exception
+     */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
 
@@ -66,7 +98,12 @@ public class GroupChatServerHandler extends SimpleChannelInboundHandler<String> 
 
     }
 
-    // 异常处理
+    /**
+     * 异常处理
+     * @param ctx
+     * @param cause
+     * @throws Exception
+     */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         // 关闭ctx

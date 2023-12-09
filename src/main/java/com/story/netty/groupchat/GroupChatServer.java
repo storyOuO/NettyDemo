@@ -8,6 +8,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
+/**
+ * Netty群聊 服务器class
+ * @author story7
+ * @date 2023/12/09
+ */
 public class GroupChatServer {
 
     private static final Integer PORT = 7777;
@@ -24,8 +29,10 @@ public class GroupChatServer {
 
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .option(ChannelOption.SO_BACKLOG, 128) // 等待队列最大线程数
-                    .childOption(ChannelOption.SO_KEEPALIVE, true) // 保持连接
+                    // 等待队列最大线程数
+                    .option(ChannelOption.SO_BACKLOG, 128)
+                    // 保持连接
+                    .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
