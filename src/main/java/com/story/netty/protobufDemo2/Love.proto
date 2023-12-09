@@ -1,0 +1,31 @@
+syntax = "proto3";
+option optimize_for = SPEED; // 加快解析
+option java_package = "com.story.netty.protobufDemo2"; // 指定解析到哪个包下
+option java_outer_classname = "MyDataInfo"; // 外部类名
+
+// 用一个message管理其他message
+message Manager {
+
+  enum DataType {
+    LoveType = 0;
+    HurtType = 1;
+  }
+  // 枚举类在当前message中的编号
+  DataType data_type = 1;
+
+  // 每次只管理一个子类
+  oneof dataBody {
+    Love love = 2;
+    Hurt hurt = 3;
+  }
+
+}
+
+message Love {
+    int32 loveTimes = 1;
+    string loveName = 2;
+}
+message Hurt {
+  int32 hurtTimes = 1;
+  string hurtName = 2;
+}
