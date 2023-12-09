@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form onsubmit="return false">
+        <textarea name="message" style="height: 300px; width: 300px"></textarea>
+        <input type="button" value="发送消息" onclick="send(this.form.message.value)">
+        <textarea name="responseText" style="height: 300px; width: 300px"></textarea>
+        <input type="button" value="清空响应消息区" onclick="document.getElementById('responseText').value=''">
+    </form>
+</body>
+<script>
+    var socket;
+    // 判断浏览器是否支持websocket
+    if (window.WebSocket) {
+        socket = new WebSocket("ws://localhost:7777/miss");
+        // 相当于channelRead0 ev收到服务端回送的消息
+        socket.onmessage = function (ev) {
+            var rt = document.getElementById("responseText");
+
+            if (rt == null) {
+                alert("onmessage: rt为空!")
+            } else {
+                rt.value = rt.value + "\n" + ev.data;
+            }
+
+        }
+        socket.onopen = function (ev) {
+            var rt = document.getElementById("responseText");
+            if (rt == null) {
+                alert("onopen: rt为空!")
+            } else {
+                rt.value = "连接开启了...."
+            }
+        }
+        socket.onclose = function (ev) {
+            var rt = document.getElementById("responseText");
+            if (rt == null) {
+                alert("onclose: rt为空!")
+            } else {
+                rt.value = "连接关闭了...."
+            }
+        }
+    } else {
+        alert("当前浏览器不支持websocket!");
+    }
+
+    // 发送消息到服务器方法
+    function send(message) {
+        if (!window.socket) {
+            // 如果socket没有创建好 直接返回
+            return;
+        }
+        if (socket.readyState == WebSocket.OPEN) {
+            // 发送消息
+            socket.send(message);
+        } else {
+            alert("连接未开启!");
+        }
+
+    }
+
+</script>
+</html>
