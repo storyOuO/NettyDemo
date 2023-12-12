@@ -42,7 +42,7 @@ public class NettyServer {
                             pipeline.addLast(new StringDecoder());
                             pipeline.addLast(new StringEncoder());
                             // 自定义处理器
-                            pipeline.addLast(null);
+                            pipeline.addLast(new NettyServerHandler());
                         }
                     });
 
